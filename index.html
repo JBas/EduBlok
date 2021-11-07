@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>EduBlok</title>
+	<script>
+		const imports = new Set();
+		imports.add("import rp2");
+		
+		var code = "";
+		var readIn = "";
+	</script>
+	<script src="https://unpkg.com/blockly/blockly.min.js"></script>
+	<script src="generators/python_compressed.js"></script>
+	<script src="generators/custom_python_generator.js"></script>
+	<script src="blocks/pico.js"></script>
+	<script src="blocks/machine.js"></script>
+	<script src="blocks/communication.js"></script>
+	<script src="blocks/peripherals.js"></script>
+	<!-- <script src="blocks/sensors.js"></script> -->
+	<script src="terminal/serial.js"></script>
+	<link rel="stylesheet" href="style.css">
+	
+	<!-- <script>
+		function openTab(event, tabName) {
+			var i, tabcontent, tablinks;
+
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			tablinks = document.getElementsByClassName("tablink");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			document.getElementById(tabName).style.display = "block";
+			event.currentTarget.className += " active";
+		}
+	</script> -->
+</head>
+
+<body>
+	
+	<div class="tab">
+		<button class="tablink" id="defaultOpen" onclick="openTab(event, 'editor')">EduBlok</button>
+		<button class="tablink" onclick="openTab(event, 'console')">Console</button>
+	</div>
+	
+	
+	
+	<button type="button" id="connBtn">Connect!</button>
+	<button type="button" id="discBtn">Disconnect!</button>
+	<button type="button" id="startBtn">Start!</button>
+	<button type="button" id="stopBtn">Stop!</button>
+	
+	<div id="editor" class="tabcontent">
+		<div id="blockly" style="width: 800px; height: 480px;"></div>
+		<xml id="toolbox" style="display: none">
+			
+			<category name="Machine">
+				<block type="colour_picker"></block>
+				<block type="machine_set_pin"></block>
+				<block type="machine_wait_n"></block>
+				<block type="peri_lcd"></block>
+				
+				<category name="Communication">
+					<block type="comm_uart"></block>
+					<block type="comm_uart_read_n"></block>
+				</category>
+			</category>
+			
+			
+			<category name="Control">
+	  			<block type="controls_if"></block>
+				<category name="Loops">
+					<block type="controls_repeat_ext"></block>
+					<block type="controls_repeat"></block>
+					<block type="controls_whileUntil"></block>
+					<block type="controls_for"></block>
+					<block type="controls_forEach"></block>
+				</category>
+			</category>
+			
+			
+			<category name="Logic">
+				<block type="logic_boolean"></block>
+				<block type="logic_compare"></block>
+				<block type="logic_operation"></block>
+			</category>
+			
+			<category name="Lists">
+				<block type="lists_create_empty"></block>
+				<block type="lists_repeat"></block>
+				<block type="lists_isEmpty"></block>
+				<block type="lists_length"></block>
+				<block type="lists_create_with"></block>
+			</category>
+			
+			<category name="Math">
+				<block type="math_number"></block>
+				<block type="math_arithmetic"></block>
+				<block type="math_change"></block>
+				<block type="math_constrain"></block>
+			</category>
+			
+			<category name="Functions">
+				<block type="procedures_defnoreturn"></block>
+				<block type="procedures_defreturn"></block>
+			</category>
+			
+			<category name="Variables">
+				<block type="variables_get_dynamic"></block>
+				<block type="variables_set_dynamic"></block>
+			</category>
+			
+			<category name="Text">
+				<block type="text"></block>
+				<block type="text_multiline"></block>
+				<block type="text_print"></block>
+			</category>
+			
+			<category name="Sensor">
+				<block type="sensor_range_finder"></block>
+				<block type="sensor_motion_sense"></block>
+			</category>
+			
+			<category name="Python">
+				<block type="python_python"></block>
+			</category>
+		</xml>
+
+	</div>
+	
+	<div id="console" class="tabcontent">
+		
+	</div>
+	
+	<div class = "panel">
+		<!-- <div id = "console"></div> -->
+		<div id = "python"></div>
+	</div>
+	
+	<script>
+		
+		const serial = new WebSerialAPI();
+		
+		var workspace = Blockly.inject('blockly',
+		{
+			toolbox: document.getElementById('toolbox'),
+			renderer: "zelos",
+			grid: {
+				spacing: 20,
+				length: 1,
+				colour: "#ccc",
+				snap: true
+			}
+		});
+		
+		workspace.addChangeListener((event) => {
+			code = Blockly.Python.workspaceToCode(workspace);
+			document.getElementById("python").innerText = code;
+		});
+		
+		window.addEventListener("load", () => {
+			// document.getElementById("defaultOpen").click();
+			document.getElementById("connBtn").onclick = serial.connect.bind(serial);
+			document.getElementById("startBtn").onclick = serial.run.bind(serial);
+		});
+
+	  </script>
+
+
+
+</body>
+</html> 
