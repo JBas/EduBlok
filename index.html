@@ -18,7 +18,7 @@
 	<script src="blocks/machine.js"></script>
 	<script src="blocks/communication.js"></script>
 	<script src="blocks/peripherals.js"></script>
-	<!-- <script src="blocks/sensors.js"></script> -->
+	<script src="blocks/sensors.js"></script>
 	<script src="terminal/serial.js"></script>
 	<link rel="stylesheet" href="style.css">
 	
@@ -44,10 +44,10 @@
 
 <body>
 	
-	<div class="tab">
+	<!-- <div class="tab">
 		<button class="tablink" id="defaultOpen" onclick="openTab(event, 'editor')">EduBlok</button>
 		<button class="tablink" onclick="openTab(event, 'console')">Console</button>
-	</div>
+	</div> -->
 	
 	
 	
@@ -63,6 +63,7 @@
 			<category name="Machine">
 				<block type="colour_picker"></block>
 				<block type="machine_set_pin"></block>
+				<block type="machine_read_pin"></block>
 				<block type="machine_wait_n"></block>
 				<block type="peri_lcd"></block>
 				

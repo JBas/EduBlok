@@ -1,3 +1,73 @@
+const ASSIGNED_PINS = new Set();
+const IMPORTED_MODULES = new Set();
+
+// Machine Blocks Code
+Blockly.Python["machine_set_pin"] = function(block) {
+	const gpio = block.getFieldValue('GPIOs');
+	const pin = gpio.substring(4);
+	const state = block.getFieldValue('STATE');
+	
+	const var_name = 'p' + pin;
+	
+	var _code;
+	if (ASSIGNED_PINS.has('p' + pin)) {
+		_code = var_name + '.init(mode=Pin.OUT, value=' + state + ')\n';
+	} else {
+		ASSIGNED_PINS.add('p' + pin);
+		_code = var_name + ' = Pin(' + pin + ', Pin.OUT, value=' + state + ')\n';	
+	}
+	
+	return _code;
+};
+
+Blockly.Python["machine_read_pin"] = function(block) {
+	const gpio = block.getFieldValue('GPIOs');
+	const pin = gpio.substring(4);
+	
+	const var_name = 'p' + pin;
+	
+	var _code;
+	
+	var _code;
+	if (ASSIGNED_PINS.has(var_name)) {
+		_code = var_name + '.value()\n';
+	} else {
+		ASSIGNED_PINS.add('p' + pin);
+		_code = var_name + ' = Pin(' + pin + ', Pin.IN)\n';
+		_code += var_name + '.value()\n';
+	}
+	 
+	
+	return [_code, Blockly.Python.ORDER_ATOMIC];
+};
+
+Blockly.Python['machine_wait_n'] = function(block) {
+  var value = Blockly.Python.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  var units = block.getFieldValue('UNITS');
+  
+  IMPORTED_MODULES.add("import time");
+  
+  var code;
+  
+  switch (units) {
+	  case "SECONDS":
+		  code = "time.sleep(" + value + ")";
+		  break;
+	  case "MILLISECONDS":
+		  code = "time.ms_sleep(" + value + ")";
+		  break;
+	  case "MICROSECONDS":
+		  code = "time.us_sleep(" + value + ")";
+		  break;
+  }
+  return code;
+};
+
+
+
+
+
+
 Blockly.Python["ping)))"] = function(block) {
 	const gpio = block.getFieldValue('GPIOs');
 	const pin = gpio.substring(4);
